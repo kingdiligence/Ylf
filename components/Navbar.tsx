@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
 
 const links = [
-  { href: '/', label: 'Home' },
+  { href: '/home', label: 'Home' },
   { href: '/forums', label: 'Forums' },
   { href: '/chat', label: 'Chat' },
   { href: '/webinars', label: 'Webinars' },
