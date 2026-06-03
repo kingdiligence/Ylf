@@ -17,15 +17,17 @@ export default async function HomePage() {
 
   const [{ data: slides }, { data: profile }, { data: nextWebinar }] = await Promise.all([
     supabase.from('slides').select('id, title, caption, image_url').eq('active', true).order('display_order'),
-    supabase.auth.getUser().then(({ data: { user } }) =>
-      user ? supabase.from('profiles').select('full_name').eq('id', user.id).single() : { data: null }
-    ),
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return { data: null }
+      return supabase.from('profiles').select('full_name').eq('id', user.id).single()
+    }),
     supabase.from('webinars').select('title, scheduled_at, join_url').eq('active', true)
       .gt('scheduled_at', new Date().toISOString()).order('scheduled_at').limit(1).single(),
   ])
 
   const allSlides = slides ?? []
-  const firstName = profile?.data?.full_name?.split(' ')[0]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const firstName = (profile as any)?.data?.full_name?.split(' ')[0] ?? (profile as any)?.full_name?.split(' ')[0]
 
   return (
     <div>
